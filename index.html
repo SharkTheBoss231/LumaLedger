@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#15191f">
+  <title>LumaLedger — Two Currencies. One Clear Ledger.</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="LumaLedger home">
+        <span class="brand-mark">L</span>
+        <span><strong>LumaLedger</strong><small>FINANCE, MADE CLEAR</small></span>
+      </a>
+
+      <div class="profile-area">
+        <label for="profileSelect">ACTIVE BUSINESS</label>
+        <div class="profile-select-wrap">
+          <select id="profileSelect" aria-label="Select business profile"></select>
+          <button class="icon-button" id="addProfileBtn" title="Add business profile" aria-label="Add business profile">＋</button>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <button class="nav-link active" data-view="overview"><span>▦</span> Overview</button>
+        <button class="nav-link" data-view="transactions"><span>⇄</span> Transactions</button>
+        <button class="nav-link" data-view="reports"><span>▥</span> Reports</button>
+        <button class="nav-link" data-view="settings"><span>⚙</span> Settings</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="offline-note"><span class="status-dot"></span><span>Offline-ready storage</span></div>
+        <small> LumaLedger v1.0.0</small>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" id="menuBtn" aria-label="Toggle navigation">☰</button>
+        <div>
+          <p class="eyebrow" id="pageEyebrow">YOUR BUSINESS AT A GLANCE</p>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="today-label" id="todayLabel"></span>
+          <button class="primary-button" id="quickAddBtn">＋ <span>New transaction</span></button>
+        </div>
+      </header>
+
+      <section class="view active" id="overviewView">
+        <div class="welcome-row">
+          <div><h2 id="welcomeName">Welcome back</h2><p>Here is what is happening with your business.</p></div>
+          <div class="rate-pill"><span class="rate-dot"></span><span id="rateDisplay">1 USD = L$ 190.00</span><button id="editRateQuick" title="Edit exchange rate">Edit</button></div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card balance-card">
+            <div class="stat-top"><span>Total balance (LRD equivalent)</span><span class="stat-icon">L$</span></div>
+            <strong id="totalBalance">L$ 0.00</strong>
+            <small>Combined value of both currencies</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Income this month</span><span class="stat-icon green">↗</span></div>
+            <strong id="monthIncome">$0.00</strong>
+            <small id="monthIncomeSub">Across both currencies</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Expenses this month</span><span class="stat-icon red">↘</span></div>
+            <strong id="monthExpenses">$0.00</strong>
+            <small id="monthExpenseSub">Across both currencies</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Transactions this month</span><span class="stat-icon yellow">⇄</span></div>
+            <strong id="monthCount">0</strong>
+            <small>Recorded this calendar month</small>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h3>Cash flow</h3><p>Income vs. expenses · last 7 days</p></div><span class="panel-tag">7 DAYS</span></div>
+            <div class="chart-wrap"><canvas id="cashflowChart"></canvas></div>
+          </article>
+          <article class="panel currency-panel">
+            <div class="panel-heading"><div><h3>Currency snapshot</h3><p>Current balances by currency</p></div></div>
+            <div class="currency-row"><div class="currency-symbol lrd-symbol">L$</div><div class="currency-info"><strong>LRD balance</strong><small>Liberian Dollar</small></div><b id="lrdBalance">L$ 0.00</b></div>
+            <div class="currency-row"><div class="currency-symbol usd-symbol">$</div><div class="currency-info"><strong>USD balance</strong><small>United States Dollar</small></div><b id="usdBalance">$0.00</b></div>
+            <div class="rate-box"><span>Current conversion rate</span><strong id="snapshotRate">1 USD = L$ 190.00</strong></div>
+          </article>
+        </div>
+
+        <article class="panel recent-panel">
+          <div class="panel-heading"><div><h3>Recent transactions</h3><p>Your latest financial activity</p></div><button class="text-button" data-goto="transactions">View all →</button></div>
+          <div class="table-scroll"><table><thead><tr><th>DESCRIPTION</th><th>TYPE</th><th>DATE</th><th>AMOUNT</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+          <div class="empty-state" id="recentEmpty">No transactions yet. Add your first transaction to get started.</div>
+        </article>
+      </section>
+
+      <section class="view" id="transactionsView">
+        <div class="section-toolbar">
+          <div><h2>Transactions</h2><p>Track every amount coming in and going out.</p></div>
+          <div class="toolbar-actions"><input type="search" id="transactionSearch" placeholder="Search transactions..."><select id="typeFilter"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select><button class="primary-button" id="addTransactionBtn">＋ Add transaction</button></div>
+        </div>
+        <article class="panel">
+          <div class="table-scroll"><table><thead><tr><th>DESCRIPTION</th><th>CATEGORY</th><th>TYPE</th><th>DATE</th><th>AMOUNT</th><th></th></tr></thead><tbody id="transactionsTable"></tbody></table></div>
+          <div class="empty-state" id="transactionsEmpty">No matching transactions found.</div>
+        </article>
+      </section>
+
+      <section class="view" id="reportsView">
+        <div class="section-toolbar"><div><h2>Financial reports</h2><p>Understand your business performance over time.</p></div><button class="secondary-button" id="exportCsvBtn">↓ Export CSV</button></div>
+        <div class="report-filter panel"><label for="reportMonth">REPORT MONTH</label><input type="month" id="reportMonth"></div>
+        <div class="stats-grid report-stats">
+          <article class="stat-card"><div class="stat-top"><span>Income</span><span class="stat-icon green">↗</span></div><strong id="reportIncome">L$ 0.00</strong><small>LRD equivalent</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Expenses</span><span class="stat-icon red">↘</span></div><strong id="reportExpenses">L$ 0.00</strong><small>LRD equivalent</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Net cash flow</span><span class="stat-icon yellow">＝</span></div><strong id="reportNet">L$ 0.00</strong><small>Income minus expenses</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Transactions</span><span class="stat-icon">⇄</span></div><strong id="reportCount">0</strong><small>Selected month</small></article>
+        </div>
+        <article class="panel"><div class="panel-heading"><div><h3>Monthly breakdown</h3><p>Totals shown in their original currencies</p></div></div><div class="breakdown-grid"><div class="breakdown-item"><span>LRD income</span><strong id="reportLrdIncome">L$ 0.00</strong></div><div class="breakdown-item"><span>LRD expenses</span><strong id="reportLrdExpense">L$ 0.00</strong></div><div class="breakdown-item"><span>USD income</span><strong id="reportUsdIncome">$0.00</strong></div><div class="breakdown-item"><span>USD expenses</span><strong id="reportUsdExpense">$0.00</strong></div></div></article>
+      </section>
+
+      <section class="view" id="settingsView">
+        <div class="section-toolbar"><div><h2>Settings</h2><p>Manage your business profile and exchange rate.</p></div></div>
+        <div class="settings-grid">
+          <article class="panel settings-card"><h3>Business profile</h3><p>Update the name of your active business.</p><form id="profileForm"><label for="businessName">BUSINESS NAME</label><input id="businessName" maxlength="50" required><button class="primary-button" type="submit">Save business name</button></form></article>
+          <article class="panel settings-card"><h3>Exchange rate</h3><p>Set how many Liberian dollars equal one US dollar. This rate is used for conversions and reports.</p><form id="rateForm"><label for="exchangeRate">1 USD = LRD</label><input id="exchangeRate" type="number" min="0.0001" step="0.01" required><button class="primary-button" type="submit">Update exchange rate</button></form></article>
+          <article class="panel settings-card"><h3>Your data</h3><p>Data is stored in this browser on this device. Export a backup regularly.</p><div class="button-row"><button class="secondary-button" id="backupBtn">Download backup</button><label class="secondary-button file-label">Restore backup<input type="file" id="restoreInput" accept="application/json"></label></div><small class="muted">Clearing browser data may erase your saved records.</small></article>
+          <article class="panel settings-card"><h3>Business profiles</h3><p>Each profile has its own transactions and exchange rate.</p><div id="profileList" class="profile-list"></div><button class="secondary-button" id="addProfileSettings">＋ Add business profile</button></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="transactionModal">
+    <div class="modal">
+      <div class="modal-heading"><div><p class="eyebrow">RECORD FINANCIAL ACTIVITY</p><h2>New transaction</h2></div><button class="close-button" data-close="transactionModal" aria-label="Close">×</button></div>
+      <form id="transactionForm">
+        <label for="txDescription">DESCRIPTION</label><input id="txDescription" placeholder="e.g. Customer payment" maxlength="80" required>
+        <div class="form-grid"><div><label for="txType">TYPE</label><select id="txType"><option value="income">Income</option><option value="expense">Expense</option></select></div><div><label for="txCategory">CATEGORY</label><select id="txCategory"><option>Sales</option><option>School fees</option><option>Services</option><option>Supplies</option><option>Transport</option><option>Utilities</option><option>Salary</option><option>Rent</option><option>Other</option></select></div></div>
+        <div class="form-grid"><div><label for="txAmount">AMOUNT</label><input id="txAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div><div><label for="txCurrency">CURRENCY</label><select id="txCurrency"><option value="LRD">LRD — Liberian Dollar</option><option value="USD">USD — US Dollar</option></select></div></div>
+        <label for="txDate">DATE</label><input id="txDate" type="date" required>
+        <div class="conversion-preview" id="conversionPreview">Converted amount will appear here.</div>
+        <div class="modal-actions"><button type="button" class="secondary-button" data-close="transactionModal">Cancel</button><button type="submit" class="primary-button">Save transaction</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal small-modal">
+      <div class="modal-heading"><div><p class="eyebrow">WORKSPACE</p><h2>Add business profile</h2></div><button class="close-button" data-close="profileModal" aria-label="Close">×</button></div>
+      <form id="profileCreateForm"><label for="newBusinessName">BUSINESS NAME</label><input id="newBusinessName" placeholder="e.g. Chris's Store" maxlength="50" required><label for="newBusinessRate">EXCHANGE RATE (1 USD = LRD)</label><input id="newBusinessRate" type="number" min="0.0001" step="0.01" value="190" required><div class="modal-actions"><button type="button" class="secondary-button" data-close="profileModal">Cancel</button><button type="submit" class="primary-button">Create profile</button></div></form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
