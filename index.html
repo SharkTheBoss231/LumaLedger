@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#15191f">
+  <meta name="description" content="Offline-first dual-currency business ledger for Liberian Dollars and US Dollars.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <title>LumaLedger — Two Currencies. One Clear Ledger.</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -32,8 +34,8 @@
       </nav>
 
       <div class="sidebar-bottom">
-        <div class="offline-note"><span class="status-dot"></span><span>Offline-ready storage</span></div>
-        <small> LumaLedger v1.0.0</small>
+        <div class="offline-note"><span class="status-dot"></span><span id="storageStatus">Local database starting…</span></div>
+        <small> LumaLedger v1.1.0</small>
       </div>
     </aside>
 
@@ -127,7 +129,7 @@
         <div class="settings-grid">
           <article class="panel settings-card"><h3>Business profile</h3><p>Update the name of your active business.</p><form id="profileForm"><label for="businessName">BUSINESS NAME</label><input id="businessName" maxlength="50" required><button class="primary-button" type="submit">Save business name</button></form></article>
           <article class="panel settings-card"><h3>Exchange rate</h3><p>Set how many Liberian dollars equal one US dollar. This rate is used for conversions and reports.</p><form id="rateForm"><label for="exchangeRate">1 USD = LRD</label><input id="exchangeRate" type="number" min="0.0001" step="0.01" required><button class="primary-button" type="submit">Update exchange rate</button></form></article>
-          <article class="panel settings-card"><h3>Your data</h3><p>Data is stored in this browser on this device. Export a backup regularly.</p><div class="button-row"><button class="secondary-button" id="backupBtn">Download backup</button><label class="secondary-button file-label">Restore backup<input type="file" id="restoreInput" accept="application/json"></label></div><small class="muted">Clearing browser data may erase your saved records.</small></article>
+          <article class="panel settings-card"><h3>Your data</h3><p>Your records stay on this device. Create a password-protected backup before moving devices or making major changes.</p><div class="button-row"><button class="secondary-button" id="backupBtn">Export encrypted backup</button><label class="secondary-button file-label">Import backup<input type="file" id="restoreInput" accept="application/json,.json"></label></div><div class="data-safety"><strong>Automatic recovery</strong><span id="recoveryStatus">A local recovery copy is maintained as you work.</span></div><small class="muted">Backups contain private financial information. Keep your password safe; encrypted backups cannot be opened without it.</small></article>
           <article class="panel settings-card"><h3>Business profiles</h3><p>Each profile has its own transactions and exchange rate.</p><div id="profileList" class="profile-list"></div><button class="secondary-button" id="addProfileSettings">＋ Add business profile</button></article>
         </div>
       </section>
@@ -157,5 +159,6 @@
 
   <div class="toast" id="toast" role="status"></div>
   <script src="script.js"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{const s=document.getElementById("storageStatus");if(s)s.textContent="Offline cache unavailable";}));}</script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "name": "LumaLedger — Two Currencies. One Clear Ledger.",
+  "short_name": "LumaLedger",
+  "description": "Offline-first dual-currency business ledger.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#15191f",
+  "theme_color": "#15191f",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
